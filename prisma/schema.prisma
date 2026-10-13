@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// 一部短剧
+model Drama {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(200)
+  category    String    @db.VarChar(50)
+  rating      String    @db.VarChar(10)
+  description String    @db.Text
+  image       String    @db.VarChar(200)
+  tag         String    @db.VarChar(50)
+  episodes    Episode[]
+
+  @@index([category])
+  @@index([title])
+}
+
+// 一集短剧
+model Episode {
+  id       Int    @id @default(autoincrement())
+  number   Int
+  title    String @db.VarChar(100)
+  videoUrl String @db.VarChar(500)
+  dramaId  Int
+  drama    Drama  @relation(fields: [dramaId], references: [id], onDelete: Cascade)
+
+  @@unique([dramaId, number])
+  @@index([dramaId])
+}
