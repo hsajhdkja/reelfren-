@@ -1,31 +1,58 @@
-
 "use client";
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import { dramas, categories, posterUrl } from "@/data/dramas";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { categories, posterUrl, type Drama } from "@/data/dramas";
+
+// 列表接口返回的数据形状(和 route.ts 里的返回结构对应)
+type ListResult = {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  items: Drama[];
+};
+
+const PAGE_SIZE = 6;
 
 export default function Home() {
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("All");
-  
+  const [page, setPage] = useState(1);
+  const [result, setResult] = useState<ListResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  // "再跑一次"计数器:点重试按钮时 +1,触发 useEffect 重新执行
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  const filteredDramas = useMemo(() => {
-    const query = keyword.trim().toLowerCase();
+  useEffect(() => {
+    // 防抖:停手 300 毫秒才真正发请求
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const params = new URLSearchParams({
+          keyword: keyword.trim(),
+          category,
+          page: String(page),
+          pageSize: String(PAGE_SIZE),
+        });
+        const response = await fetch(`/api/dramas?${params.toString()}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message ?? "请求失败");
+        }
+        setResult(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "网络错误，请稍后再试");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
 
-    return dramas.filter((drama) => {
-      const matchesCategory =
-        category === "All" || drama.category === category;
-
-      const matchesKeyword =
-        !query ||
-        drama.title.toLowerCase().includes(query) ||
-        drama.description.toLowerCase().includes(query) ||
-        drama.category.toLowerCase().includes(query);
-
-      return matchesCategory && matchesKeyword;
-    });
-  }, [keyword, category]);
+    // 清理:下一次 effect 跑之前,把没到点的计时器作废(这就是防抖的另一半)
+    return () => clearTimeout(timer);
+  }, [keyword, category, page, refreshTick]);
 
   return (
     <main className="site-shell">
@@ -47,6 +74,7 @@ export default function Home() {
             value={keyword}
             onChange={(event) => {
               setKeyword(event.target.value);
+              setPage(1); // 新搜索永远从第 1 页开始
             }}
             placeholder="搜索短剧..."
             aria-label="搜索短剧"
@@ -55,7 +83,10 @@ export default function Home() {
             <button
               type="button"
               className="clear-search"
-              onClick={() => setKeyword("")}
+              onClick={() => {
+                setKeyword("");
+                setPage(1);
+              }}
               aria-label="清除搜索"
             >
               ×
@@ -107,7 +138,7 @@ export default function Home() {
               alt=""
             />
           </div>
-          <div className="hero-poster hero-poster-front">
+          <Link href="/dramas/1" className="hero-poster hero-poster-front">
             <img
               src={posterUrl("photo-1516589178581-6cd7833ae3b2")}
               alt=""
@@ -117,7 +148,7 @@ export default function Home() {
               <strong>The Last Promise</strong>
               <small>Romance · 68 Episodes</small>
             </div>
-          </div>
+          </Link>
           <div className="floating-note">
             <span className="note-star">★</span>
             <div><strong>9.2 / 10</strong><small>观众推荐</small></div>
@@ -132,7 +163,9 @@ export default function Home() {
             <h2>发现精彩短剧</h2>
             <p>总有一个故事，让你忍不住继续看下去。</p>
           </div>
-          <span className="result-count">{filteredDramas.length} 部短剧</span>
+          <span className="result-count">
+            {result ? `${result.total} 部短剧` : "…"}
+          </span>
         </div>
 
         <div className="category-row" aria-label="短剧分类">
@@ -143,41 +176,84 @@ export default function Home() {
               className={`category-button ${
                 category === item.value ? "category-active" : ""
               }`}
-              onClick={() => setCategory(item.value)}
+              onClick={() => {
+                setCategory(item.value);
+                setPage(1);
+              }}
             >
               {item.label}
             </button>
           ))}
         </div>
 
-        {filteredDramas.length > 0 ? (
-          <div className="drama-grid" id="popular">
-            {filteredDramas.map((drama) => (
-               <Link
-                key={drama.id}
-                href={`/dramas/${drama.id}`}
-                className="drama-card"
-              >
-                <div className="drama-poster">
-                  <img
-                    src={posterUrl(drama.image)}
-                    alt={drama.title}
-                    loading="lazy"
-                  />
-                  <span className="drama-tag">{drama.tag}</span>
-                  <span className="episode-count">{drama.episodes} 集</span>
-                  <span className="card-play" aria-hidden="true">▶</span>
-                </div>
-                <div className="drama-info">
-                  <div className="drama-title-row">
-                    <h3>{drama.title}</h3>
-                    <span className="rating">★ {drama.rating}</span>
-                  </div>
-                  <p>{drama.category} <span>·</span> {drama.episodes} 集</p>
-                </div>
-              </Link>
-            ))}
+        {isLoading ? (
+          <div className="empty-state">
+            <span>⏳</span>
+            <h3>加载中…</h3>
           </div>
+        ) : error ? (
+          <div className="empty-state">
+            <span>⚠</span>
+            <h3>出错了</h3>
+            <p>{error}</p>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => setRefreshTick((tick) => tick + 1)}
+            >
+              重试
+            </button>
+          </div>
+        ) : result && result.items.length > 0 ? (
+          <>
+            <div className="drama-grid" id="popular">
+              {result.items.map((drama) => (
+                <Link
+                  key={drama.id}
+                  href={`/dramas/${drama.id}`}
+                  className="drama-card"
+                >
+                  <div className="drama-poster">
+                    <img
+                      src={posterUrl(drama.image)}
+                      alt={drama.title}
+                      loading="lazy"
+                    />
+                    <span className="drama-tag">{drama.tag}</span>
+                    <span className="episode-count">{drama.episodes} 集</span>
+                    <span className="card-play" aria-hidden="true">▶</span>
+                  </div>
+                  <div className="drama-info">
+                    <div className="drama-title-row">
+                      <h3>{drama.title}</h3>
+                      <span className="rating">★ {drama.rating}</span>
+                    </div>
+                    <p>{drama.category} <span>·</span> {drama.episodes} 集</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="pagination">
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                ◀ 上一页
+              </button>
+              <span className="page-info">第 {page} / {result.totalPages} 页 · 共 {result.total} 部</span>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={page >= result.totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                下一页 ▶
+              </button>
+            </div>
+          </>
         ) : (
           <div className="empty-state">
             <span>⌕</span>
@@ -189,6 +265,7 @@ export default function Home() {
               onClick={() => {
                 setKeyword("");
                 setCategory("All");
+                setPage(1);
               }}
             >
               查看全部短剧
@@ -215,5 +292,5 @@ export default function Home() {
         <span>© 2026 ReelFren-style Demo</span>
       </footer>
     </main>
-   );
-  }
+  );
+}
