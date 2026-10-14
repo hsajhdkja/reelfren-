@@ -25,7 +25,6 @@ function createClient() {
     password: decodeURIComponent(url.password),
     database: url.pathname.replace("/", ""),
     connectionLimit: 5,
-    connectTimeout: 10_000, // 跨国连接握手慢,放宽到 10 秒(默认 1 秒不够)
     ssl: isLocal
       ? undefined
       : { ca: fs.readFileSync("tidb-ca.pem"), rejectUnauthorized: true },

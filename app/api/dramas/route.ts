@@ -55,18 +55,7 @@ export async function GET(request: NextRequest) {
     orderBy: { id: "asc" },
     skip: (page - 1) * pageSize, // 跳过前几条 = 分页公式
     take: pageSize,              // 取多少条
-    // 只取列表需要的字段(不取 embedding:那是 40KB/部的向量,列表用不到)
-    select: {
-      id: true,
-      title: true,
-      category: true,
-      rating: true,
-      description: true,
-      image: true,
-      tag: true,
-      published: true,
-      _count: { select: { episodes: true } },
-    },
+    include: { _count: { select: { episodes: true } } }, // 顺带统计每部剧有几集
   });
 
   // ---- 5. 整形成前端认识的形状(JSON 结构和上一版一致) ----
