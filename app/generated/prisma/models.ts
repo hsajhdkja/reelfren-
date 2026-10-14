@@ -10,4 +10,7 @@
  */
 export type * from './models/Drama'
 export type * from './models/Episode'
+export type * from './models/User'
+export type * from './models/Favorite'
+export type * from './models/WatchProgress'
 export type * from './commonInputTypes'

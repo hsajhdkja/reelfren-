@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { posterUrl } from "@/data/dramas";
 import { prisma } from "@/lib/prisma";
+import FavoriteButton from "@/components/FavoriteButton";
 
 // 预生成:从数据库读出所有剧的编号,每部剧生成一个静态页面
 export async function generateStaticParams() {
@@ -61,6 +62,10 @@ export default async function DramaDetailPage({
             <span>共 {drama.episodes} 集</span>
           </div>
           <p className="detail-desc">{drama.description}</p>
+
+          <div className="detail-actions">
+            <FavoriteButton dramaId={drama.id} />
+          </div>
         </div>
       </section>
 

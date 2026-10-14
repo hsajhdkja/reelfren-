@@ -1,4 +1,5 @@
 "use client";
+import AuthMenu from "@/components/AuthMenu";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -93,6 +94,8 @@ export default function Home() {
             </button>
           )}
         </label>
+
+        <AuthMenu />
       </header>
 
       <section className="hero" id="home">

@@ -7,30 +7,65 @@ datasource db {
   provider = "mysql"
 }
 
-// 一部短剧
 model Drama {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(200)
-  category    String    @db.VarChar(50)
-  rating      String    @db.VarChar(10)
-  description String    @db.Text
-  image       String    @db.VarChar(200)
-  tag         String    @db.VarChar(50)
+  id          Int        @id @default(autoincrement())
+  title       String     @db.VarChar(200)
+  category    String     @db.VarChar(50)
+  rating      String     @db.VarChar(10)
+  description String     @db.Text
+  image       String     @db.VarChar(200)
+  tag         String     @db.VarChar(50)
   episodes    Episode[]
+  favorites   Favorite[] // 新增:这部剧被谁收藏了
 
   @@index([category])
   @@index([title])
 }
 
-// 一集短剧
 model Episode {
-  id       Int    @id @default(autoincrement())
-  number   Int
-  title    String @db.VarChar(100)
-  videoUrl String @db.VarChar(500)
-  dramaId  Int
-  drama    Drama  @relation(fields: [dramaId], references: [id], onDelete: Cascade)
+  id         Int             @id @default(autoincrement())
+  number     Int
+  title      String          @db.VarChar(100)
+  videoUrl   String          @db.VarChar(500)
+  dramaId    Int
+  drama      Drama           @relation(fields: [dramaId], references: [id], onDelete: Cascade)
+  progresses WatchProgress[] // 新增:这集被哪些人看到哪
 
   @@unique([dramaId, number])
   @@index([dramaId])
+}
+
+// 注册用户
+model User {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique @db.VarChar(200) // 登录账号,全站唯一
+  passwordHash String          @db.VarChar(200) // ⚠️ 只存哈希指纹,永不存明文密码
+  createdAt    DateTime        @default(now())
+  favorites    Favorite[]
+  progresses   WatchProgress[]
+}
+
+// 收藏:哪个用户 × 哪部剧
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  dramaId   Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  drama     Drama    @relation(fields: [dramaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dramaId]) // 每人对每部剧只能收藏一次
+}
+
+// 播放进度:哪个用户 × 哪一集 → 看到第几秒
+model WatchProgress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  episodeId   Int
+  positionSec Float    // 观看位置(秒)
+  updatedAt   DateTime @updatedAt // 每次保存自动刷新这个时间
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode     Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, episodeId]) // 每人对每集只有一条进度(新进度覆盖旧进度)
 }

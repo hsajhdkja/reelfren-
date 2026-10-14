@@ -233,6 +233,7 @@ export type DramaWhereInput = {
   image?: Prisma.StringFilter<"Drama"> | string
   tag?: Prisma.StringFilter<"Drama"> | string
   episodes?: Prisma.EpisodeListRelationFilter
+  favorites?: Prisma.FavoriteListRelationFilter
 }
 
 export type DramaOrderByWithRelationInput = {
@@ -244,6 +245,7 @@ export type DramaOrderByWithRelationInput = {
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
   episodes?: Prisma.EpisodeOrderByRelationAggregateInput
+  favorites?: Prisma.FavoriteOrderByRelationAggregateInput
   _relevance?: Prisma.DramaOrderByRelevanceInput
 }
 
@@ -259,6 +261,7 @@ export type DramaWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringFilter<"Drama"> | string
   tag?: Prisma.StringFilter<"Drama"> | string
   episodes?: Prisma.EpisodeListRelationFilter
+  favorites?: Prisma.FavoriteListRelationFilter
 }, "id">
 
 export type DramaOrderByWithAggregationInput = {
@@ -297,6 +300,7 @@ export type DramaCreateInput = {
   image: string
   tag: string
   episodes?: Prisma.EpisodeCreateNestedManyWithoutDramaInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutDramaInput
 }
 
 export type DramaUncheckedCreateInput = {
@@ -308,6 +312,7 @@ export type DramaUncheckedCreateInput = {
   image: string
   tag: string
   episodes?: Prisma.EpisodeUncheckedCreateNestedManyWithoutDramaInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutDramaInput
 }
 
 export type DramaUpdateInput = {
@@ -318,6 +323,7 @@ export type DramaUpdateInput = {
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   episodes?: Prisma.EpisodeUpdateManyWithoutDramaNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutDramaNestedInput
 }
 
 export type DramaUncheckedUpdateInput = {
@@ -329,6 +335,7 @@ export type DramaUncheckedUpdateInput = {
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   episodes?: Prisma.EpisodeUncheckedUpdateManyWithoutDramaNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutDramaNestedInput
 }
 
 export type DramaCreateManyInput = {
@@ -435,6 +442,20 @@ export type DramaUpdateOneRequiredWithoutEpisodesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DramaUpdateToOneWithWhereWithoutEpisodesInput, Prisma.DramaUpdateWithoutEpisodesInput>, Prisma.DramaUncheckedUpdateWithoutEpisodesInput>
 }
 
+export type DramaCreateNestedOneWithoutFavoritesInput = {
+  create?: Prisma.XOR<Prisma.DramaCreateWithoutFavoritesInput, Prisma.DramaUncheckedCreateWithoutFavoritesInput>
+  connectOrCreate?: Prisma.DramaCreateOrConnectWithoutFavoritesInput
+  connect?: Prisma.DramaWhereUniqueInput
+}
+
+export type DramaUpdateOneRequiredWithoutFavoritesNestedInput = {
+  create?: Prisma.XOR<Prisma.DramaCreateWithoutFavoritesInput, Prisma.DramaUncheckedCreateWithoutFavoritesInput>
+  connectOrCreate?: Prisma.DramaCreateOrConnectWithoutFavoritesInput
+  upsert?: Prisma.DramaUpsertWithoutFavoritesInput
+  connect?: Prisma.DramaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DramaUpdateToOneWithWhereWithoutFavoritesInput, Prisma.DramaUpdateWithoutFavoritesInput>, Prisma.DramaUncheckedUpdateWithoutFavoritesInput>
+}
+
 export type DramaCreateWithoutEpisodesInput = {
   title: string
   category: string
@@ -442,6 +463,7 @@ export type DramaCreateWithoutEpisodesInput = {
   description: string
   image: string
   tag: string
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutDramaInput
 }
 
 export type DramaUncheckedCreateWithoutEpisodesInput = {
@@ -452,6 +474,7 @@ export type DramaUncheckedCreateWithoutEpisodesInput = {
   description: string
   image: string
   tag: string
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutDramaInput
 }
 
 export type DramaCreateOrConnectWithoutEpisodesInput = {
@@ -477,6 +500,7 @@ export type DramaUpdateWithoutEpisodesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  favorites?: Prisma.FavoriteUpdateManyWithoutDramaNestedInput
 }
 
 export type DramaUncheckedUpdateWithoutEpisodesInput = {
@@ -487,6 +511,65 @@ export type DramaUncheckedUpdateWithoutEpisodesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutDramaNestedInput
+}
+
+export type DramaCreateWithoutFavoritesInput = {
+  title: string
+  category: string
+  rating: string
+  description: string
+  image: string
+  tag: string
+  episodes?: Prisma.EpisodeCreateNestedManyWithoutDramaInput
+}
+
+export type DramaUncheckedCreateWithoutFavoritesInput = {
+  id?: number
+  title: string
+  category: string
+  rating: string
+  description: string
+  image: string
+  tag: string
+  episodes?: Prisma.EpisodeUncheckedCreateNestedManyWithoutDramaInput
+}
+
+export type DramaCreateOrConnectWithoutFavoritesInput = {
+  where: Prisma.DramaWhereUniqueInput
+  create: Prisma.XOR<Prisma.DramaCreateWithoutFavoritesInput, Prisma.DramaUncheckedCreateWithoutFavoritesInput>
+}
+
+export type DramaUpsertWithoutFavoritesInput = {
+  update: Prisma.XOR<Prisma.DramaUpdateWithoutFavoritesInput, Prisma.DramaUncheckedUpdateWithoutFavoritesInput>
+  create: Prisma.XOR<Prisma.DramaCreateWithoutFavoritesInput, Prisma.DramaUncheckedCreateWithoutFavoritesInput>
+  where?: Prisma.DramaWhereInput
+}
+
+export type DramaUpdateToOneWithWhereWithoutFavoritesInput = {
+  where?: Prisma.DramaWhereInput
+  data: Prisma.XOR<Prisma.DramaUpdateWithoutFavoritesInput, Prisma.DramaUncheckedUpdateWithoutFavoritesInput>
+}
+
+export type DramaUpdateWithoutFavoritesInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  rating?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.StringFieldUpdateOperationsInput | string
+  episodes?: Prisma.EpisodeUpdateManyWithoutDramaNestedInput
+}
+
+export type DramaUncheckedUpdateWithoutFavoritesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  rating?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.StringFieldUpdateOperationsInput | string
+  episodes?: Prisma.EpisodeUncheckedUpdateManyWithoutDramaNestedInput
 }
 
 
@@ -496,10 +579,12 @@ export type DramaUncheckedUpdateWithoutEpisodesInput = {
 
 export type DramaCountOutputType = {
   episodes: number
+  favorites: number
 }
 
 export type DramaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   episodes?: boolean | DramaCountOutputTypeCountEpisodesArgs
+  favorites?: boolean | DramaCountOutputTypeCountFavoritesArgs
 }
 
 /**
@@ -519,6 +604,13 @@ export type DramaCountOutputTypeCountEpisodesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.EpisodeWhereInput
 }
 
+/**
+ * DramaCountOutputType without action
+ */
+export type DramaCountOutputTypeCountFavoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FavoriteWhereInput
+}
+
 
 export type DramaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -529,6 +621,7 @@ export type DramaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   image?: boolean
   tag?: boolean
   episodes?: boolean | Prisma.Drama$episodesArgs<ExtArgs>
+  favorites?: boolean | Prisma.Drama$favoritesArgs<ExtArgs>
   _count?: boolean | Prisma.DramaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["drama"]>
 
@@ -547,6 +640,7 @@ export type DramaSelectScalar = {
 export type DramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "rating" | "description" | "image" | "tag", ExtArgs["result"]["drama"]>
 export type DramaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   episodes?: boolean | Prisma.Drama$episodesArgs<ExtArgs>
+  favorites?: boolean | Prisma.Drama$favoritesArgs<ExtArgs>
   _count?: boolean | Prisma.DramaCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -554,6 +648,7 @@ export type $DramaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Drama"
   objects: {
     episodes: Prisma.$EpisodePayload<ExtArgs>[]
+    favorites: Prisma.$FavoritePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -904,6 +999,7 @@ readonly fields: DramaFieldRefs;
 export interface Prisma__DramaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   episodes<T extends Prisma.Drama$episodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Drama$episodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  favorites<T extends Prisma.Drama$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Drama$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1309,6 +1405,30 @@ export type Drama$episodesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.EpisodeScalarFieldEnum | Prisma.EpisodeScalarFieldEnum[]
+}
+
+/**
+ * Drama.favorites
+ */
+export type Drama$favoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Favorite
+   */
+  select?: Prisma.FavoriteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Favorite
+   */
+  omit?: Prisma.FavoriteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FavoriteInclude<ExtArgs> | null
+  where?: Prisma.FavoriteWhereInput
+  orderBy?: Prisma.FavoriteOrderByWithRelationInput | Prisma.FavoriteOrderByWithRelationInput[]
+  cursor?: Prisma.FavoriteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FavoriteScalarFieldEnum | Prisma.FavoriteScalarFieldEnum[]
 }
 
 /**

@@ -52,7 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Drama: 'Drama',
-  Episode: 'Episode'
+  Episode: 'Episode',
+  User: 'User',
+  Favorite: 'Favorite',
+  WatchProgress: 'WatchProgress'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -95,6 +98,37 @@ export const EpisodeScalarFieldEnum = {
 export type EpisodeScalarFieldEnum = (typeof EpisodeScalarFieldEnum)[keyof typeof EpisodeScalarFieldEnum]
 
 
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const FavoriteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  dramaId: 'dramaId',
+  createdAt: 'createdAt'
+} as const
+
+export type FavoriteScalarFieldEnum = (typeof FavoriteScalarFieldEnum)[keyof typeof FavoriteScalarFieldEnum]
+
+
+export const WatchProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  episodeId: 'episodeId',
+  positionSec: 'positionSec',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WatchProgressScalarFieldEnum = (typeof WatchProgressScalarFieldEnum)[keyof typeof WatchProgressScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -121,4 +155,12 @@ export const EpisodeOrderByRelevanceFieldEnum = {
 } as const
 
 export type EpisodeOrderByRelevanceFieldEnum = (typeof EpisodeOrderByRelevanceFieldEnum)[keyof typeof EpisodeOrderByRelevanceFieldEnum]
+
+
+export const UserOrderByRelevanceFieldEnum = {
+  email: 'email',
+  passwordHash: 'passwordHash'
+} as const
+
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 

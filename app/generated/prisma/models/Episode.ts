@@ -225,6 +225,7 @@ export type EpisodeWhereInput = {
   videoUrl?: Prisma.StringFilter<"Episode"> | string
   dramaId?: Prisma.IntFilter<"Episode"> | number
   drama?: Prisma.XOR<Prisma.DramaScalarRelationFilter, Prisma.DramaWhereInput>
+  progresses?: Prisma.WatchProgressListRelationFilter
 }
 
 export type EpisodeOrderByWithRelationInput = {
@@ -234,6 +235,7 @@ export type EpisodeOrderByWithRelationInput = {
   videoUrl?: Prisma.SortOrder
   dramaId?: Prisma.SortOrder
   drama?: Prisma.DramaOrderByWithRelationInput
+  progresses?: Prisma.WatchProgressOrderByRelationAggregateInput
   _relevance?: Prisma.EpisodeOrderByRelevanceInput
 }
 
@@ -248,6 +250,7 @@ export type EpisodeWhereUniqueInput = Prisma.AtLeast<{
   videoUrl?: Prisma.StringFilter<"Episode"> | string
   dramaId?: Prisma.IntFilter<"Episode"> | number
   drama?: Prisma.XOR<Prisma.DramaScalarRelationFilter, Prisma.DramaWhereInput>
+  progresses?: Prisma.WatchProgressListRelationFilter
 }, "id" | "dramaId_number">
 
 export type EpisodeOrderByWithAggregationInput = {
@@ -279,6 +282,7 @@ export type EpisodeCreateInput = {
   title: string
   videoUrl: string
   drama: Prisma.DramaCreateNestedOneWithoutEpisodesInput
+  progresses?: Prisma.WatchProgressCreateNestedManyWithoutEpisodeInput
 }
 
 export type EpisodeUncheckedCreateInput = {
@@ -287,6 +291,7 @@ export type EpisodeUncheckedCreateInput = {
   title: string
   videoUrl: string
   dramaId: number
+  progresses?: Prisma.WatchProgressUncheckedCreateNestedManyWithoutEpisodeInput
 }
 
 export type EpisodeUpdateInput = {
@@ -294,6 +299,7 @@ export type EpisodeUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   drama?: Prisma.DramaUpdateOneRequiredWithoutEpisodesNestedInput
+  progresses?: Prisma.WatchProgressUpdateManyWithoutEpisodeNestedInput
 }
 
 export type EpisodeUncheckedUpdateInput = {
@@ -302,6 +308,7 @@ export type EpisodeUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dramaId?: Prisma.IntFieldUpdateOperationsInput | number
+  progresses?: Prisma.WatchProgressUncheckedUpdateManyWithoutEpisodeNestedInput
 }
 
 export type EpisodeCreateManyInput = {
@@ -383,6 +390,11 @@ export type EpisodeSumOrderByAggregateInput = {
   dramaId?: Prisma.SortOrder
 }
 
+export type EpisodeScalarRelationFilter = {
+  is?: Prisma.EpisodeWhereInput
+  isNot?: Prisma.EpisodeWhereInput
+}
+
 export type EpisodeCreateNestedManyWithoutDramaInput = {
   create?: Prisma.XOR<Prisma.EpisodeCreateWithoutDramaInput, Prisma.EpisodeUncheckedCreateWithoutDramaInput> | Prisma.EpisodeCreateWithoutDramaInput[] | Prisma.EpisodeUncheckedCreateWithoutDramaInput[]
   connectOrCreate?: Prisma.EpisodeCreateOrConnectWithoutDramaInput | Prisma.EpisodeCreateOrConnectWithoutDramaInput[]
@@ -425,10 +437,25 @@ export type EpisodeUncheckedUpdateManyWithoutDramaNestedInput = {
   deleteMany?: Prisma.EpisodeScalarWhereInput | Prisma.EpisodeScalarWhereInput[]
 }
 
+export type EpisodeCreateNestedOneWithoutProgressesInput = {
+  create?: Prisma.XOR<Prisma.EpisodeCreateWithoutProgressesInput, Prisma.EpisodeUncheckedCreateWithoutProgressesInput>
+  connectOrCreate?: Prisma.EpisodeCreateOrConnectWithoutProgressesInput
+  connect?: Prisma.EpisodeWhereUniqueInput
+}
+
+export type EpisodeUpdateOneRequiredWithoutProgressesNestedInput = {
+  create?: Prisma.XOR<Prisma.EpisodeCreateWithoutProgressesInput, Prisma.EpisodeUncheckedCreateWithoutProgressesInput>
+  connectOrCreate?: Prisma.EpisodeCreateOrConnectWithoutProgressesInput
+  upsert?: Prisma.EpisodeUpsertWithoutProgressesInput
+  connect?: Prisma.EpisodeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EpisodeUpdateToOneWithWhereWithoutProgressesInput, Prisma.EpisodeUpdateWithoutProgressesInput>, Prisma.EpisodeUncheckedUpdateWithoutProgressesInput>
+}
+
 export type EpisodeCreateWithoutDramaInput = {
   number: number
   title: string
   videoUrl: string
+  progresses?: Prisma.WatchProgressCreateNestedManyWithoutEpisodeInput
 }
 
 export type EpisodeUncheckedCreateWithoutDramaInput = {
@@ -436,6 +463,7 @@ export type EpisodeUncheckedCreateWithoutDramaInput = {
   number: number
   title: string
   videoUrl: string
+  progresses?: Prisma.WatchProgressUncheckedCreateNestedManyWithoutEpisodeInput
 }
 
 export type EpisodeCreateOrConnectWithoutDramaInput = {
@@ -475,6 +503,52 @@ export type EpisodeScalarWhereInput = {
   dramaId?: Prisma.IntFilter<"Episode"> | number
 }
 
+export type EpisodeCreateWithoutProgressesInput = {
+  number: number
+  title: string
+  videoUrl: string
+  drama: Prisma.DramaCreateNestedOneWithoutEpisodesInput
+}
+
+export type EpisodeUncheckedCreateWithoutProgressesInput = {
+  id?: number
+  number: number
+  title: string
+  videoUrl: string
+  dramaId: number
+}
+
+export type EpisodeCreateOrConnectWithoutProgressesInput = {
+  where: Prisma.EpisodeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EpisodeCreateWithoutProgressesInput, Prisma.EpisodeUncheckedCreateWithoutProgressesInput>
+}
+
+export type EpisodeUpsertWithoutProgressesInput = {
+  update: Prisma.XOR<Prisma.EpisodeUpdateWithoutProgressesInput, Prisma.EpisodeUncheckedUpdateWithoutProgressesInput>
+  create: Prisma.XOR<Prisma.EpisodeCreateWithoutProgressesInput, Prisma.EpisodeUncheckedCreateWithoutProgressesInput>
+  where?: Prisma.EpisodeWhereInput
+}
+
+export type EpisodeUpdateToOneWithWhereWithoutProgressesInput = {
+  where?: Prisma.EpisodeWhereInput
+  data: Prisma.XOR<Prisma.EpisodeUpdateWithoutProgressesInput, Prisma.EpisodeUncheckedUpdateWithoutProgressesInput>
+}
+
+export type EpisodeUpdateWithoutProgressesInput = {
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  drama?: Prisma.DramaUpdateOneRequiredWithoutEpisodesNestedInput
+}
+
+export type EpisodeUncheckedUpdateWithoutProgressesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  dramaId?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
 export type EpisodeCreateManyDramaInput = {
   id?: number
   number: number
@@ -486,6 +560,7 @@ export type EpisodeUpdateWithoutDramaInput = {
   number?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  progresses?: Prisma.WatchProgressUpdateManyWithoutEpisodeNestedInput
 }
 
 export type EpisodeUncheckedUpdateWithoutDramaInput = {
@@ -493,6 +568,7 @@ export type EpisodeUncheckedUpdateWithoutDramaInput = {
   number?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  progresses?: Prisma.WatchProgressUncheckedUpdateManyWithoutEpisodeNestedInput
 }
 
 export type EpisodeUncheckedUpdateManyWithoutDramaInput = {
@@ -503,6 +579,35 @@ export type EpisodeUncheckedUpdateManyWithoutDramaInput = {
 }
 
 
+/**
+ * Count Type EpisodeCountOutputType
+ */
+
+export type EpisodeCountOutputType = {
+  progresses: number
+}
+
+export type EpisodeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  progresses?: boolean | EpisodeCountOutputTypeCountProgressesArgs
+}
+
+/**
+ * EpisodeCountOutputType without action
+ */
+export type EpisodeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EpisodeCountOutputType
+   */
+  select?: Prisma.EpisodeCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EpisodeCountOutputType without action
+ */
+export type EpisodeCountOutputTypeCountProgressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WatchProgressWhereInput
+}
+
 
 export type EpisodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -511,6 +616,8 @@ export type EpisodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   videoUrl?: boolean
   dramaId?: boolean
   drama?: boolean | Prisma.DramaDefaultArgs<ExtArgs>
+  progresses?: boolean | Prisma.Episode$progressesArgs<ExtArgs>
+  _count?: boolean | Prisma.EpisodeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["episode"]>
 
 
@@ -526,12 +633,15 @@ export type EpisodeSelectScalar = {
 export type EpisodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "title" | "videoUrl" | "dramaId", ExtArgs["result"]["episode"]>
 export type EpisodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   drama?: boolean | Prisma.DramaDefaultArgs<ExtArgs>
+  progresses?: boolean | Prisma.Episode$progressesArgs<ExtArgs>
+  _count?: boolean | Prisma.EpisodeCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $EpisodePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Episode"
   objects: {
     drama: Prisma.$DramaPayload<ExtArgs>
+    progresses: Prisma.$WatchProgressPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -880,6 +990,7 @@ readonly fields: EpisodeFieldRefs;
 export interface Prisma__EpisodeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   drama<T extends Prisma.DramaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DramaDefaultArgs<ExtArgs>>): Prisma.Prisma__DramaClient<runtime.Types.Result.GetResult<Prisma.$DramaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  progresses<T extends Prisma.Episode$progressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Episode$progressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WatchProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1259,6 +1370,30 @@ export type EpisodeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Episodes to delete.
    */
   limit?: number
+}
+
+/**
+ * Episode.progresses
+ */
+export type Episode$progressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WatchProgress
+   */
+  select?: Prisma.WatchProgressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WatchProgress
+   */
+  omit?: Prisma.WatchProgressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WatchProgressInclude<ExtArgs> | null
+  where?: Prisma.WatchProgressWhereInput
+  orderBy?: Prisma.WatchProgressOrderByWithRelationInput | Prisma.WatchProgressOrderByWithRelationInput[]
+  cursor?: Prisma.WatchProgressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WatchProgressScalarFieldEnum | Prisma.WatchProgressScalarFieldEnum[]
 }
 
 /**

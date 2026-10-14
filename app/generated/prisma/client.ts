@@ -51,3 +51,18 @@ export type Drama = Prisma.DramaModel
  * 
  */
 export type Episode = Prisma.EpisodeModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model Favorite
+ * 
+ */
+export type Favorite = Prisma.FavoriteModel
+/**
+ * Model WatchProgress
+ * 
+ */
+export type WatchProgress = Prisma.WatchProgressModel
