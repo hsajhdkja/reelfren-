@@ -22,6 +22,8 @@ model Drama {
   image       String     @db.VarChar(200)
   tag         String     @db.VarChar(50)
   published   Boolean    @default(true) // 上下架开关:false = 游客看不到
+  embedding   String?    @db.Text // 语义向量(JSON 数组文字,由 AI 生成;null = 还没生成)
+
   episodes    Episode[]
   favorites   Favorite[]
 

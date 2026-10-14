@@ -82,7 +82,8 @@ export const DramaScalarFieldEnum = {
   description: 'description',
   image: 'image',
   tag: 'tag',
-  published: 'published'
+  published: 'published',
+  embedding: 'embedding'
 } as const
 
 export type DramaScalarFieldEnum = (typeof DramaScalarFieldEnum)[keyof typeof DramaScalarFieldEnum]
@@ -139,13 +140,22 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 export const DramaOrderByRelevanceFieldEnum = {
   title: 'title',
   category: 'category',
   rating: 'rating',
   description: 'description',
   image: 'image',
-  tag: 'tag'
+  tag: 'tag',
+  embedding: 'embedding'
 } as const
 
 export type DramaOrderByRelevanceFieldEnum = (typeof DramaOrderByRelevanceFieldEnum)[keyof typeof DramaOrderByRelevanceFieldEnum]

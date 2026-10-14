@@ -25,25 +25,56 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   // "再跑一次"计数器:点重试按钮时 +1,触发 useEffect 重新执行
   const [refreshTick, setRefreshTick] = useState(0);
+  const [aiMode, setAiMode] = useState(false);
+  const [aiReasons, setAiReasons] = useState<Record<number, string>>({});
+
 
   useEffect(() => {
     // 防抖:停手 300 毫秒才真正发请求
     const timer = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
-      try {
-        const params = new URLSearchParams({
-          keyword: keyword.trim(),
-          category,
-          page: String(page),
-          pageSize: String(PAGE_SIZE),
-        });
-        const response = await fetch(`/api/dramas?${params.toString()}`);
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message ?? "请求失败");
+            try {
+        if (aiMode && keyword.trim()) {
+          // AI 语义搜索:一句话描述 → top3 + 推荐理由
+          const response = await fetch(
+            `/api/search/ai?q=${encodeURIComponent(keyword.trim())}`
+          );
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message ?? "AI 搜索失败");
+          }
+          setAiReasons(
+            Object.fromEntries(
+              data.items.map((d: { id: number; reason: string }) => [
+                d.id,
+                d.reason,
+              ])
+            )
+          );
+          setResult({
+            total: data.items.length,
+            page: 1,
+            pageSize: data.items.length || 1,
+            totalPages: 1,
+            items: data.items,
+          });
+        } else {
+          // 原有关键词/分类搜索(一行没变,只是挪进了 else)
+          const params = new URLSearchParams({
+            keyword: keyword.trim(),
+            category,
+            page: String(page),
+            pageSize: String(PAGE_SIZE),
+          });
+          const response = await fetch(`/api/dramas?${params.toString()}`);
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message ?? "请求失败");
+          }
+          setAiReasons({});
+          setResult(data);
         }
-        setResult(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "网络错误，请稍后再试");
       } finally {
@@ -53,7 +84,7 @@ export default function Home() {
 
     // 清理:下一次 effect 跑之前,把没到点的计时器作废(这就是防抖的另一半)
     return () => clearTimeout(timer);
-  }, [keyword, category, page, refreshTick]);
+     }, [keyword, category, page, refreshTick, aiMode]);
 
   return (
     <main className="site-shell">
@@ -167,10 +198,24 @@ export default function Home() {
             <p>总有一个故事，让你忍不住继续看下去。</p>
           </div>
           <span className="result-count">
-            {result ? `${result.total} 部短剧` : "…"}
+         {result
+              ? aiMode
+                ? `✨ AI 推荐 ${result.total} 部`
+                : `${result.total} 部短剧`
+              : "…"}
           </span>
         </div>
-
+<label className="ai-toggle">
+          <input
+            type="checkbox"
+            checked={aiMode}
+            onChange={(e) => {
+              setAiMode(e.target.checked);
+              setPage(1);
+            }}
+          />
+          ✨ AI 语义搜索
+        </label>
         <div className="category-row" aria-label="短剧分类">
           {categories.map((item) => (
             <button
@@ -232,6 +277,11 @@ export default function Home() {
                       <span className="rating">★ {drama.rating}</span>
                     </div>
                     <p>{drama.category} <span>·</span> {drama.episodes} 集</p>
+                    {aiMode && aiReasons[drama.id] && (
+                      <p className="card-reason">
+                        ✨ {aiReasons[drama.id]}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))}
