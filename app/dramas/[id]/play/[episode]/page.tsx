@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { dramas, getDramaById } from "@/data/dramas";
+import { prisma } from "@/lib/prisma";
 import Player from "./Player";
 
-// 预生成所有播放页:8 部剧 × 各自全部集数,组合出所有网址
-export function generateStaticParams() {
-  return dramas.flatMap((drama) =>
-    drama.episodeList.map((episode) => ({
+// 预生成所有播放页:从数据库读出 剧×集 的全部组合
+export async function generateStaticParams() {
+  const rows = await prisma.drama.findMany({
+    include: { episodes: true },
+  });
+  return rows.flatMap((drama) =>
+    drama.episodes.map((episode) => ({
       id: String(drama.id),
       episode: String(episode.number),
     }))
@@ -17,19 +20,34 @@ export default async function PlayPage({
   params,
 }: PageProps<"/dramas/[id]/play/[episode]">) {
   const { id, episode: episodeParam } = await params;
-  const drama = getDramaById(Number(id));
-  if (!drama) notFound();
-
+  const dramaId = Number(id);
   const episodeNumber = Number(episodeParam);
-  const episode = drama.episodeList.find(
-    (item) => item.number === episodeNumber
-  );
+
+  if (!Number.isInteger(dramaId) || dramaId < 1) notFound();
+  if (!Number.isInteger(episodeNumber) || episodeNumber < 1) notFound();
+
+  const row = await prisma.drama.findUnique({
+    where: { id: dramaId },
+    include: { episodes: { orderBy: { number: "asc" } } },
+  });
+  if (!row) notFound();
+
+  const episode = row.episodes.find((item) => item.number === episodeNumber);
   if (!episode) notFound();
 
-  // 算出上一集/下一集的编号;没有就是 null(界面据此显示"不可点")
-  const prevNumber = episodeNumber > 1 ? episodeNumber - 1 : null;
+  // 上一集/下一集:在整条剧集列表里找邻居
+  const index = row.episodes.findIndex(
+    (item) => item.number === episodeNumber
+  );
+  const prevNumber = index > 0 ? row.episodes[index - 1].number : null;
   const nextNumber =
-    episodeNumber < drama.episodeList.length ? episodeNumber + 1 : null;
+    index < row.episodes.length - 1 ? row.episodes[index + 1].number : null;
+
+  const drama = {
+    id: row.id,
+    title: row.title,
+    episodeList: row.episodes,
+  };
 
   return (
     <main className="site-shell">

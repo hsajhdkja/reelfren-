@@ -1,23 +1,42 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { dramas, getDramaById, posterUrl } from "@/data/dramas";
+import { posterUrl } from "@/data/dramas";
+import { prisma } from "@/lib/prisma";
 
-// 预生成静态页面:8 部剧各生成一个,访客请求时不用现算(架构文档 5.3 的"静态化")
-export function generateStaticParams() {
-  return dramas.map((drama) => ({ id: String(drama.id) }));
+// 预生成:从数据库读出所有剧的编号,每部剧生成一个静态页面
+export async function generateStaticParams() {
+  const rows = await prisma.drama.findMany({ select: { id: true } });
+  return rows.map((row) => ({ id: String(row.id) }));
 }
 
-// Next.js 16:params 是 Promise,必须 await;类型用全局助手 PageProps(不用 import)
+// Next.js 16:params 是 Promise,必须 await
 export default async function DramaDetailPage({
   params,
 }: PageProps<"/dramas/[id]">) {
   const { id } = await params;
-  const drama = getDramaById(Number(id)); // 网址里的编号是文字,转成数字再查
+  const dramaId = Number(id);
 
-  // 编号不存在(比如 /dramas/999)→ 渲染 404 页面,后面代码不再执行
-  if (!drama) {
+  // 参数校验:不是正整数直接 404
+  if (!Number.isInteger(dramaId) || dramaId < 1) {
     notFound();
   }
+
+  // 查库:剧 + 它的所有集(按集数排序)
+  const row = await prisma.drama.findUnique({
+    where: { id: dramaId },
+    include: { episodes: { orderBy: { number: "asc" } } },
+  });
+  if (!row) {
+    notFound();
+  }
+
+  // 整形:让下面的 JSX 不用改一个字(episodes=总数,episodeList=明细)
+  const { episodes, ...dramaData } = row;
+  const drama = {
+    ...dramaData,
+    episodes: episodes.length,
+    episodeList: episodes,
+  };
 
   return (
     <main className="site-shell">
@@ -50,9 +69,9 @@ export default async function DramaDetailPage({
         <div className="episode-grid">
           {drama.episodeList.map((episode) => (
             <Link
-               key={episode.number}
-               href={`/dramas/${drama.id}/play/${episode.number}`}
-               className="episode-item"
+              key={episode.number}
+              href={`/dramas/${drama.id}/play/${episode.number}`}
+              className="episode-item"
             >
               {episode.title}
             </Link>
