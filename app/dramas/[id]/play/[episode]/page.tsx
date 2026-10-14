@@ -3,18 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Player from "./Player";
 
-// 预生成所有播放页:从数据库读出 剧×集 的全部组合
-export async function generateStaticParams() {
-  const rows = await prisma.drama.findMany({
-    include: { episodes: true },
-  });
-  return rows.flatMap((drama) =>
-    drama.episodes.map((episode) => ({
-      id: String(drama.id),
-      episode: String(episode.number),
-    }))
-  );
-}
+// 关闭"瞬时流式渲染"= 允许整页阻塞式渲染:每次访问现查数据库,数据实时
+export const instant = false;
 
 export default async function PlayPage({
   params,

@@ -4,16 +4,14 @@ import { posterUrl } from "@/data/dramas";
 import { prisma } from "@/lib/prisma";
 import FavoriteButton from "@/components/FavoriteButton";
 
-// 预生成:从数据库读出所有剧的编号,每部剧生成一个静态页面
-export async function generateStaticParams() {
-  const rows = await prisma.drama.findMany({ select: { id: true } });
-  return rows.map((row) => ({ id: String(row.id) }));
-}
+// 关闭"瞬时流式渲染"= 允许整页阻塞式渲染:每次访问现查数据库,数据实时
+export const instant = false;
 
-// Next.js 16:params 是 Promise,必须 await
 export default async function DramaDetailPage({
   params,
 }: PageProps<"/dramas/[id]">) {
+
+  // Next.js 16:params 是 Promise,必须 await
   const { id } = await params;
   const dramaId = Number(id);
 
