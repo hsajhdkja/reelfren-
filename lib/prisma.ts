@@ -8,7 +8,13 @@ import { PrismaClient } from "../app/generated/prisma/client";
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createClient() {
-  const url = new URL(process.env.DATABASE_URL!);
+  const raw = process.env.DATABASE_URL;
+  if (!raw) {
+    throw new Error(
+      "缺少 DATABASE_URL 环境变量(本地看 .env;云端看部署平台的 Settings → Environment Variables)"
+    );
+  }
+  const url = new URL(raw);
   // 本机 MySQL 不加密;云数据库(如 TiDB Cloud)强制 TLS,需带 CA 证书
   const isLocal = url.hostname === "localhost";
 
@@ -26,7 +32,11 @@ function createClient() {
   return new PrismaClient({ adapter });
 }
 
-export const prisma = globalForPrisma.prisma ?? createClient();
+// 关键改进:变量缺失时不再在"模块加载瞬间"崩溃(否则构建直接失败),
+// 而是延迟到真正第一次使用连接时才创建
+export const prisma = process.env.DATABASE_URL
+  ? globalForPrisma.prisma ?? createClient()
+  : (null as unknown as PrismaClient);
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
