@@ -797,7 +797,8 @@ export const DramaScalarFieldEnum = {
   rating: 'rating',
   description: 'description',
   image: 'image',
-  tag: 'tag'
+  tag: 'tag',
+  published: 'published'
 } as const
 
 export type DramaScalarFieldEnum = (typeof DramaScalarFieldEnum)[keyof typeof DramaScalarFieldEnum]
@@ -818,6 +819,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   passwordHash: 'passwordHash',
+  role: 'role',
   createdAt: 'createdAt'
 } as const
 
@@ -898,6 +900,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Role'
+ */
+export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
     
 
 

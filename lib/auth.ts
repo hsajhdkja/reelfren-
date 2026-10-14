@@ -54,6 +54,33 @@ export async function getCurrentUser() {
   if (userId === null) return null;
   return prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, email: true, createdAt: true }, // 密码指纹绝不外带
+    select: { id: true, email: true, createdAt: true, role: true}, // 密码指纹绝不外带
   });
+}
+// 管理员守卫:未登录 → 401;登录但非管理员 → 403;都过了 → 放行
+export async function requireAdmin() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return {
+      user: null,
+      response: Response.json(
+        { error: "NOT_LOGGED_IN", message: "请先登录" },
+        { status: 401 }
+      ),
+    };
+  }
+  const full = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true },
+  });
+  if (full?.role !== "ADMIN") {
+    return {
+      user: null,
+      response: Response.json(
+        { error: "FORBIDDEN", message: "需要管理员权限" },
+        { status: 403 }
+      ),
+    };
+  }
+  return { user: full, response: null }; // 双证齐全,放行
 }

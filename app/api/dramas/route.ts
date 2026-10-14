@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
 
   // ---- 3. 组装查询条件(翻译官的活:条件对象 → SQL 的 WHERE) ----
   const where = {
+    published: true, // 游客只见上架的(管理员走别的接口)
     ...(category === "All" ? {} : { category }),
     ...(keyword
       ? {

@@ -42,6 +42,7 @@ export type DramaMinAggregateOutputType = {
   description: string | null
   image: string | null
   tag: string | null
+  published: boolean | null
 }
 
 export type DramaMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type DramaMaxAggregateOutputType = {
   description: string | null
   image: string | null
   tag: string | null
+  published: boolean | null
 }
 
 export type DramaCountAggregateOutputType = {
@@ -62,6 +64,7 @@ export type DramaCountAggregateOutputType = {
   description: number
   image: number
   tag: number
+  published: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type DramaMinAggregateInputType = {
   description?: true
   image?: true
   tag?: true
+  published?: true
 }
 
 export type DramaMaxAggregateInputType = {
@@ -92,6 +96,7 @@ export type DramaMaxAggregateInputType = {
   description?: true
   image?: true
   tag?: true
+  published?: true
 }
 
 export type DramaCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type DramaCountAggregateInputType = {
   description?: true
   image?: true
   tag?: true
+  published?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type DramaGroupByOutputType = {
   description: string
   image: string
   tag: string
+  published: boolean
   _count: DramaCountAggregateOutputType | null
   _avg: DramaAvgAggregateOutputType | null
   _sum: DramaSumAggregateOutputType | null
@@ -232,6 +239,7 @@ export type DramaWhereInput = {
   description?: Prisma.StringFilter<"Drama"> | string
   image?: Prisma.StringFilter<"Drama"> | string
   tag?: Prisma.StringFilter<"Drama"> | string
+  published?: Prisma.BoolFilter<"Drama"> | boolean
   episodes?: Prisma.EpisodeListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
 }
@@ -244,6 +252,7 @@ export type DramaOrderByWithRelationInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   episodes?: Prisma.EpisodeOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
   _relevance?: Prisma.DramaOrderByRelevanceInput
@@ -260,6 +269,7 @@ export type DramaWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Drama"> | string
   image?: Prisma.StringFilter<"Drama"> | string
   tag?: Prisma.StringFilter<"Drama"> | string
+  published?: Prisma.BoolFilter<"Drama"> | boolean
   episodes?: Prisma.EpisodeListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
 }, "id">
@@ -272,6 +282,7 @@ export type DramaOrderByWithAggregationInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   _count?: Prisma.DramaCountOrderByAggregateInput
   _avg?: Prisma.DramaAvgOrderByAggregateInput
   _max?: Prisma.DramaMaxOrderByAggregateInput
@@ -290,6 +301,7 @@ export type DramaScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Drama"> | string
   image?: Prisma.StringWithAggregatesFilter<"Drama"> | string
   tag?: Prisma.StringWithAggregatesFilter<"Drama"> | string
+  published?: Prisma.BoolWithAggregatesFilter<"Drama"> | boolean
 }
 
 export type DramaCreateInput = {
@@ -299,6 +311,7 @@ export type DramaCreateInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   episodes?: Prisma.EpisodeCreateNestedManyWithoutDramaInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutDramaInput
 }
@@ -311,6 +324,7 @@ export type DramaUncheckedCreateInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   episodes?: Prisma.EpisodeUncheckedCreateNestedManyWithoutDramaInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutDramaInput
 }
@@ -322,6 +336,7 @@ export type DramaUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   episodes?: Prisma.EpisodeUpdateManyWithoutDramaNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutDramaNestedInput
 }
@@ -334,6 +349,7 @@ export type DramaUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   episodes?: Prisma.EpisodeUncheckedUpdateManyWithoutDramaNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutDramaNestedInput
 }
@@ -346,6 +362,7 @@ export type DramaCreateManyInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
 }
 
 export type DramaUpdateManyMutationInput = {
@@ -355,6 +372,7 @@ export type DramaUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DramaUncheckedUpdateManyInput = {
@@ -365,6 +383,7 @@ export type DramaUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DramaOrderByRelevanceInput = {
@@ -381,6 +400,7 @@ export type DramaCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
+  published?: Prisma.SortOrder
 }
 
 export type DramaAvgOrderByAggregateInput = {
@@ -395,6 +415,7 @@ export type DramaMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
+  published?: Prisma.SortOrder
 }
 
 export type DramaMinOrderByAggregateInput = {
@@ -405,6 +426,7 @@ export type DramaMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   tag?: Prisma.SortOrder
+  published?: Prisma.SortOrder
 }
 
 export type DramaSumOrderByAggregateInput = {
@@ -418,6 +440,10 @@ export type DramaScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -463,6 +489,7 @@ export type DramaCreateWithoutEpisodesInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   favorites?: Prisma.FavoriteCreateNestedManyWithoutDramaInput
 }
 
@@ -474,6 +501,7 @@ export type DramaUncheckedCreateWithoutEpisodesInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutDramaInput
 }
 
@@ -500,6 +528,7 @@ export type DramaUpdateWithoutEpisodesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   favorites?: Prisma.FavoriteUpdateManyWithoutDramaNestedInput
 }
 
@@ -511,6 +540,7 @@ export type DramaUncheckedUpdateWithoutEpisodesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutDramaNestedInput
 }
 
@@ -521,6 +551,7 @@ export type DramaCreateWithoutFavoritesInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   episodes?: Prisma.EpisodeCreateNestedManyWithoutDramaInput
 }
 
@@ -532,6 +563,7 @@ export type DramaUncheckedCreateWithoutFavoritesInput = {
   description: string
   image: string
   tag: string
+  published?: boolean
   episodes?: Prisma.EpisodeUncheckedCreateNestedManyWithoutDramaInput
 }
 
@@ -558,6 +590,7 @@ export type DramaUpdateWithoutFavoritesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   episodes?: Prisma.EpisodeUpdateManyWithoutDramaNestedInput
 }
 
@@ -569,6 +602,7 @@ export type DramaUncheckedUpdateWithoutFavoritesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   episodes?: Prisma.EpisodeUncheckedUpdateManyWithoutDramaNestedInput
 }
 
@@ -620,6 +654,7 @@ export type DramaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   description?: boolean
   image?: boolean
   tag?: boolean
+  published?: boolean
   episodes?: boolean | Prisma.Drama$episodesArgs<ExtArgs>
   favorites?: boolean | Prisma.Drama$favoritesArgs<ExtArgs>
   _count?: boolean | Prisma.DramaCountOutputTypeDefaultArgs<ExtArgs>
@@ -635,9 +670,10 @@ export type DramaSelectScalar = {
   description?: boolean
   image?: boolean
   tag?: boolean
+  published?: boolean
 }
 
-export type DramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "rating" | "description" | "image" | "tag", ExtArgs["result"]["drama"]>
+export type DramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "rating" | "description" | "image" | "tag" | "published", ExtArgs["result"]["drama"]>
 export type DramaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   episodes?: boolean | Prisma.Drama$episodesArgs<ExtArgs>
   favorites?: boolean | Prisma.Drama$favoritesArgs<ExtArgs>
@@ -658,6 +694,7 @@ export type $DramaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     description: string
     image: string
     tag: string
+    published: boolean
   }, ExtArgs["result"]["drama"]>
   composites: {}
 }
@@ -1036,6 +1073,7 @@ export interface DramaFieldRefs {
   readonly description: Prisma.FieldRef<"Drama", 'String'>
   readonly image: Prisma.FieldRef<"Drama", 'String'>
   readonly tag: Prisma.FieldRef<"Drama", 'String'>
+  readonly published: Prisma.FieldRef<"Drama", 'Boolean'>
 }
     
 

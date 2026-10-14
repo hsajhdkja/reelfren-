@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `drama` ADD COLUMN `published` BOOLEAN NOT NULL DEFAULT true;
+
+-- AlterTable
+ALTER TABLE `user` ADD COLUMN `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER';

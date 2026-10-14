@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type Me = { id: number; email: string; createdAt: string };
+type Me = { id: number; email: string; role: "USER" | "ADMIN"; createdAt: string };
 
 export default function AuthMenu() {
   const [user, setUser] = useState<Me | null>(null);
@@ -30,6 +30,11 @@ export default function AuthMenu() {
   if (user) {
     return (
       <div className="auth-menu">
+        {user.role === "ADMIN" && (
+          <Link className="auth-link" href="/admin">
+            管理后台
+          </Link>
+        )}
         <span className="auth-email" title={user.email}>
           {user.email}
         </span>

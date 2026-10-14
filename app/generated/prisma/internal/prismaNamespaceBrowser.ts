@@ -81,7 +81,8 @@ export const DramaScalarFieldEnum = {
   rating: 'rating',
   description: 'description',
   image: 'image',
-  tag: 'tag'
+  tag: 'tag',
+  published: 'published'
 } as const
 
 export type DramaScalarFieldEnum = (typeof DramaScalarFieldEnum)[keyof typeof DramaScalarFieldEnum]
@@ -102,6 +103,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   passwordHash: 'passwordHash',
+  role: 'role',
   createdAt: 'createdAt'
 } as const
 
