@@ -1,5 +1,6 @@
 // 全站共享的数据库连接(单例:有就复用,没有才新建)
 import "dotenv/config";
+import fs from "node:fs";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../app/generated/prisma/client";
 
@@ -7,8 +8,10 @@ import { PrismaClient } from "../app/generated/prisma/client";
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createClient() {
-  // 和 seed.ts 一样:从 .env 的连接串里拆出各要素
   const url = new URL(process.env.DATABASE_URL!);
+  // 本机 MySQL 不加密;云数据库(如 TiDB Cloud)强制 TLS,需带 CA 证书
+  const isLocal = url.hostname === "localhost";
+
   const adapter = new PrismaMariaDb({
     host: url.hostname,
     port: Number(url.port || 3306),
@@ -16,6 +19,9 @@ function createClient() {
     password: decodeURIComponent(url.password),
     database: url.pathname.replace("/", ""),
     connectionLimit: 5,
+    ssl: isLocal
+      ? undefined
+      : { ca: fs.readFileSync("tidb-ca.pem"), rejectUnauthorized: true },
   });
   return new PrismaClient({ adapter });
 }

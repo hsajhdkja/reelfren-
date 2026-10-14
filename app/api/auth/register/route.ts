@@ -1,3 +1,4 @@
+import { rateLimit } from "@/lib/rate-limit";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
@@ -5,6 +6,14 @@ import { prisma } from "@/lib/prisma";
 // 请求体(JSON):{ "email": "a@b.com", "password": "至少8位" }
 export async function POST(request: Request) {
   // ---- 1. 读请求体 ----
+    // 限流:同一 IP 每分钟最多注册 5 次
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? "local";
+  if (!rateLimit(`register:${ip}`, 5, 60_000)) {
+    return Response.json(
+      { error: "TOO_MANY_REQUESTS", message: "操作太频繁，请一分钟后再试" },
+      { status: 429 }
+    );
+  }
   let body: unknown;
   try {
     body = await request.json();

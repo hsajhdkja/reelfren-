@@ -1,9 +1,19 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { setSessionCookie } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 
 // POST /api/auth/login —— 登录:验证密码,发通行证
 export async function POST(request: Request) {
+      // 限流:同一 IP 每分钟最多登录 10 次(防暴力撞密码)
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? "local";
+  if (!rateLimit(`login:${ip}`, 10, 60_000)) {
+    return Response.json(
+      { error: "TOO_MANY_REQUESTS", message: "尝试太频繁，请一分钟后再试" },
+      { status: 429 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
