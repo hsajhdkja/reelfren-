@@ -59,10 +59,18 @@ export default function Player({
     return () => clearInterval(timer);
   }, [isPlaying, episode.id]);
 
+  // 离开页面/组件卸载时:暂停视频,确保声音停止
+  useEffect(() => {
+    return () => {
+      videoRef.current?.pause();
+    };
+  }, []);
+
   // 播完:开连播且有下一集 → 自动跳转
   function handleEnded() {
     saveProgress();
     if (autoNext && nextNumber) {
+      autoAdvancingRef.current = true; // 标记:连播跳转,新页面自动播放
       router.push(`/dramas/${dramaId}/play/${nextNumber}`);
     }
   }
@@ -83,6 +91,22 @@ export default function Player({
       videoRef.current.currentTime = time;
     }
   }
+
+  // 切集时:暂停并复位(自动连播触发的跳转除外,那要保持播放)
+  const autoAdvancingRef = useRef(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (autoAdvancingRef.current) {
+      autoAdvancingRef.current = false;
+      void video.play().catch(() => {}); // 连播:新集自动继续播
+    } else {
+      video.pause(); // 手动切集:先停下
+      video.currentTime = 0;
+      setCurrentTime(0);
+    }
+  }, [episode.id]);
 
   // 视频元数据就绪:恢复上次的观看位置
   async function handleLoadedMetadata(event: SyntheticEvent<HTMLVideoElement>) {
