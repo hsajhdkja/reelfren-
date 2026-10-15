@@ -2014,3 +2014,52 @@ body {
     max-height: 420px;
   }
 }
+/* ============ 精装修第 7 课:移动端总适配与细节打磨 ============ */
+
+/* 顶栏(手机):品牌+登录区同行,搜索框独占一行 */
+@media (max-width: 680px) {
+  .topbar .auth-menu {
+    margin-left: auto;
+  }
+
+  /* 手机上顶栏会变高(搜索换行),吸顶 Tab 改为不吸附,避免错位 */
+  .discover-tabs {
+    position: static;
+  }
+}
+
+/* 分页条:窄屏允许换行 */
+.pagination {
+  flex-wrap: wrap;
+}
+
+/* 播放页(手机):沉浸式贴边 */
+@media (max-width: 640px) {
+  .play-shell {
+    width: 100%;
+    padding-bottom: var(--nav-h);
+  }
+
+  .player {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* 控制条:允许换行,不再硬挤一行 */
+  .player-controls {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .player-nav {
+    flex-wrap: wrap;
+    margin-left: 0;
+    row-gap: 6px;
+  }
+
+  /* 次要信息手机上隐藏(选集侧栏里都有) */
+  .player-episode-count {
+    display: none;
+  }
+}
