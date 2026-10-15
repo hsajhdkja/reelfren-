@@ -1673,3 +1673,114 @@ body {
     padding-bottom: calc(var(--nav-h) + 24px);
   }
 }
+/* ============ 精装修第 3 课:首页海报流 ============ */
+
+/* 精简横幅 */
+.hero-slim {
+  padding: clamp(1.6rem, 4vw, 2.6rem) clamp(1rem, 4vw, 2.5rem);
+  background:
+    linear-gradient(135deg, rgba(139, 92, 246, 0.18), transparent 60%),
+    var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-slim h1 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin: 0.3rem 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-slim p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* 分类 Tab + AI 开关 + 计数:一行吸顶 */
+.discover-tabs {
+  position: sticky;
+  top: 57px; /* 吸在顶栏下面 */
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  margin-bottom: var(--space-4);
+  background: rgba(7, 7, 15, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.discover-tabs .category-row {
+  margin-bottom: 0;
+  overflow-x: auto; /* 手机上分类多时可横滑 */
+  scrollbar-width: none;
+  flex: 1;
+}
+
+.discover-tabs .ai-toggle {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.discover-tabs .result-count {
+  flex-shrink: 0;
+}
+
+/* 纯海报卡:标题压在图上 */
+.drama-card {
+  background: var(--surface);
+}
+
+.poster-shade {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 1.8rem 0.6rem 0.5rem;
+  background: linear-gradient(to top, rgba(5, 5, 12, 0.95), rgba(5, 5, 12, 0));
+}
+
+.poster-shade h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.poster-shade .rating {
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+/* AI 推荐理由:压在遮罩里,最多两行 */
+.poster-reason {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #d8d8f0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 骨架屏:加载时的闪烁占位卡 */
+.skeleton-card {
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    100deg,
+    var(--surface) 40%,
+    var(--surface-2) 50%,
+    var(--surface) 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

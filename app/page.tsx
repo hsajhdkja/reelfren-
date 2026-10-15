@@ -1,8 +1,8 @@
 "use client";
-import AuthMenu from "@/components/AuthMenu";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import AuthMenu from "@/components/AuthMenu";
 import { categories, posterUrl, type Drama } from "@/data/dramas";
 
 // 列表接口返回的数据形状(和 route.ts 里的返回结构对应)
@@ -28,13 +28,12 @@ export default function Home() {
   const [aiMode, setAiMode] = useState(false);
   const [aiReasons, setAiReasons] = useState<Record<number, string>>({});
 
-
   useEffect(() => {
     // 防抖:停手 300 毫秒才真正发请求
     const timer = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
-            try {
+      try {
         if (aiMode && keyword.trim()) {
           // AI 语义搜索:一句话描述 → top3 + 推荐理由
           const response = await fetch(
@@ -60,7 +59,7 @@ export default function Home() {
             items: data.items,
           });
         } else {
-          // 原有关键词/分类搜索(一行没变,只是挪进了 else)
+          // 原有关键词/分类搜索
           const params = new URLSearchParams({
             keyword: keyword.trim(),
             category,
@@ -84,21 +83,15 @@ export default function Home() {
 
     // 清理:下一次 effect 跑之前,把没到点的计时器作废(这就是防抖的另一半)
     return () => clearTimeout(timer);
-     }, [keyword, category, page, refreshTick, aiMode]);
+  }, [keyword, category, page, refreshTick, aiMode]);
 
   return (
     <main className="site-shell">
       <header className="topbar">
-        <a className="brand" href="#" aria-label="ReelFren 首页">
+        <a className="brand" href="/" aria-label="ReelFren 首页">
           <span className="brand-icon">R</span>
           <span>reel<span className="brand-accent">fren</span></span>
         </a>
-
-        <nav className="main-nav">
-          <a className="nav-active" href="#home">首页</a>
-          <a href="#discover">发现短剧</a>
-          <a href="#popular">热门榜单</a>
-        </nav>
 
         <label className="search-box">
           <span aria-hidden="true">⌕</span>
@@ -108,7 +101,7 @@ export default function Home() {
               setKeyword(event.target.value);
               setPage(1); // 新搜索永远从第 1 页开始
             }}
-            placeholder="搜索短剧..."
+            placeholder="搜索短剧，或描述你想看的..."
             aria-label="搜索短剧"
           />
           {keyword && (
@@ -129,115 +122,61 @@ export default function Home() {
         <AuthMenu />
       </header>
 
-      <section className="hero" id="home">
-        <div className="hero-backdrop" />
-        <div className="hero-content">
-          <div className="eyebrow">
-            <span className="live-dot" />
-            YOUR NEXT OBSESSION
-          </div>
-
-          <h1>
-            Small Episodes.
-            <br />
-            <span>Big Emotions.</span>
-          </h1>
-
-          <p>
-            发现让你欲罢不能的精彩短剧。
-            <br />
-            随时开启下一段故事。
-          </p>
-
-          <div className="hero-actions">
-            <a href="#discover" className="primary-button">
-              探索短剧 <span>→</span>
-            </a>
-            <a href="#popular" className="secondary-button">
-              浏览热门
-            </a>
-          </div>
-
-          <div className="hero-stats">
-            <div><strong>每日</strong><span>发现新故事</span></div>
-            <div><strong>随时</strong><span>开启精彩剧情</span></div>
-            <div><strong>精彩</strong><span>短剧推荐</span></div>
-          </div>
-        </div>
-
-        <div className="hero-art">
-          <div className="hero-poster hero-poster-back">
-            <img
-              src={posterUrl("photo-1534528741775-53994a69daeb")}
-              alt=""
-            />
-          </div>
-          <Link href="/dramas/1" className="hero-poster hero-poster-front">
-            <img
-              src={posterUrl("photo-1516589178581-6cd7833ae3b2")}
-              alt=""
-            />
-            <div className="poster-overlay">
-              <span>EDITOR&apos;S PICK</span>
-              <strong>The Last Promise</strong>
-              <small>Romance · 68 Episodes</small>
-            </div>
-          </Link>
-          <div className="floating-note">
-            <span className="note-star">★</span>
-            <div><strong>9.2 / 10</strong><small>观众推荐</small></div>
-          </div>
+      {/* 精简横幅:一句话 + 品牌,不再占半屏 */}
+      <section className="hero-slim" id="home">
+        <div>
+          <span className="section-kicker">REELFREN</span>
+          <h1>小剧集，大情绪</h1>
+          <p>海量短剧 · 随时开启下一段故事</p>
         </div>
       </section>
 
       <section className="content-section" id="discover">
-        <div className="section-heading">
-          <div>
-            <span className="section-kicker">FIND YOUR STORY</span>
-            <h2>发现精彩短剧</h2>
-            <p>总有一个故事，让你忍不住继续看下去。</p>
+        {/* 分类 Tab + AI 开关 + 结果数:一行三件事,滚动吸顶 */}
+        <div className="discover-tabs">
+          <div className="category-row">
+            {categories.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                className={`category-button ${
+                  category === item.value ? "category-active" : ""
+                }`}
+                onClick={() => {
+                  setCategory(item.value);
+                  setPage(1);
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
+          <label className="ai-toggle">
+            <input
+              type="checkbox"
+              checked={aiMode}
+              onChange={(e) => {
+                setAiMode(e.target.checked);
+                setPage(1);
+              }}
+            />
+            ✨ AI
+          </label>
           <span className="result-count">
-         {result
+            {result
               ? aiMode
-                ? `✨ AI 推荐 ${result.total} 部`
-                : `${result.total} 部短剧`
+                ? `✨ ${result.total} 部`
+                : `${result.total} 部`
               : "…"}
           </span>
         </div>
-<label className="ai-toggle">
-          <input
-            type="checkbox"
-            checked={aiMode}
-            onChange={(e) => {
-              setAiMode(e.target.checked);
-              setPage(1);
-            }}
-          />
-          ✨ AI 语义搜索
-        </label>
-        <div className="category-row" aria-label="短剧分类">
-          {categories.map((item) => (
-            <button
-              key={item.value}
-              type="button"
-              className={`category-button ${
-                category === item.value ? "category-active" : ""
-              }`}
-              onClick={() => {
-                setCategory(item.value);
-                setPage(1);
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
 
         {isLoading ? (
-          <div className="empty-state">
-            <span>⏳</span>
-            <h3>加载中…</h3>
+          // 骨架屏:6 个闪烁的占位卡
+          <div className="drama-grid">
+            {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+              <div key={i} className="skeleton-card" />
+            ))}
           </div>
         ) : error ? (
           <div className="empty-state">
@@ -269,19 +208,17 @@ export default function Home() {
                     />
                     <span className="drama-tag">{drama.tag}</span>
                     <span className="episode-count">{drama.episodes} 集</span>
-                    <span className="card-play" aria-hidden="true">▶</span>
-                  </div>
-                  <div className="drama-info">
-                    <div className="drama-title-row">
+
+                    {/* 底部渐变遮罩:标题和评分压在海报上(红果式) */}
+                    <div className="poster-shade">
                       <h3>{drama.title}</h3>
                       <span className="rating">★ {drama.rating}</span>
+                      {aiMode && aiReasons[drama.id] && (
+                        <p className="poster-reason">
+                          ✨ {aiReasons[drama.id]}
+                        </p>
+                      )}
                     </div>
-                    <p>{drama.category} <span>·</span> {drama.episodes} 集</p>
-                    {aiMode && aiReasons[drama.id] && (
-                      <p className="card-reason">
-                        ✨ {aiReasons[drama.id]}
-                      </p>
-                    )}
                   </div>
                 </Link>
               ))}
@@ -296,7 +233,9 @@ export default function Home() {
               >
                 ◀ 上一页
               </button>
-              <span className="page-info">第 {page} / {result.totalPages} 页 · 共 {result.total} 部</span>
+              <span className="page-info">
+                第 {page} / {result.totalPages} 页 · 共 {result.total} 部
+              </span>
               <button
                 type="button"
                 className="secondary-button"
