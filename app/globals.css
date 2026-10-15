@@ -1784,3 +1784,233 @@ body {
     background-position: -200% 0;
   }
 }
+/* ============ 精装修第 4 课:详情页改版 ============ */
+
+.detail-shell {
+  position: relative;
+}
+
+/* 氛围层:海报铺满顶部,模糊+压暗 */
+.detail-backdrop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 480px;
+  overflow: hidden;
+  pointer-events: none; /* 纯装饰,不挡点击 */
+}
+
+.detail-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: blur(40px) brightness(0.45) saturate(1.2);
+  transform: scale(1.2); /* 放大一点,遮住模糊产生的毛边 */
+}
+
+/* 向下渐变,融入页面背景 */
+.detail-backdrop-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(7, 7, 15, 0.25), var(--bg) 92%);
+}
+
+/* 内容浮在氛围层上 */
+.detail-body {
+  position: relative;
+  z-index: 1;
+  width: min(var(--page-w), calc(100% - clamp(1.5rem, 6vw, 4rem)));
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+.detail-hero {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-end;
+  margin-top: var(--space-8);
+}
+
+.detail-poster {
+  width: 240px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 60px -16px rgba(0, 0, 0, 0.75);
+  flex-shrink: 0;
+}
+
+.detail-info {
+  flex: 1;
+  padding-bottom: var(--space-2);
+}
+
+.detail-info h1 {
+  font-size: 40px;
+  margin: var(--space-2) 0 var(--space-3);
+  letter-spacing: -0.02em;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.detail-meta span {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  background: rgba(22, 22, 42, 0.6);
+}
+
+.detail-desc {
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 560px;
+  margin-bottom: var(--space-4);
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.detail-play {
+  min-width: 180px;
+  font-size: 1rem;
+}
+
+.episode-section {
+  margin-top: var(--space-8);
+}
+
+.episode-section h2 {
+  font-size: 22px;
+  margin-bottom: var(--space-3);
+}
+
+@media (max-width: 720px) {
+  .detail-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-poster {
+    width: 60%;
+    max-width: 240px;
+  }
+
+  .detail-info h1 {
+    font-size: 30px;
+  }
+}
+/* ============ 精装修第 5 课:播放页沉浸式 ============ */
+
+.play-shell {
+  width: min(var(--page-w), calc(100% - clamp(1.5rem, 6vw, 4rem)));
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+/* 左右布局:播放器主区 + 选集侧栏 */
+.play-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.play-info {
+  margin: var(--space-3) 0 0;
+}
+
+.play-info h1 {
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+/* 选集侧栏:吸顶 + 独立滚动 */
+.ep-side {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+
+.ep-side h2 {
+  font-size: 15px;
+  margin-bottom: var(--space-2);
+  color: var(--text-muted);
+}
+
+.ep-side-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ep-side-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.ep-side-item:hover {
+  color: var(--text);
+  border-color: rgba(167, 139, 250, 0.6);
+}
+
+.ep-side-item .ep-side-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 自动连播开关 */
+.player-auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.player-auto input {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* 手机/窄屏:侧栏退到播放器下面 */
+@media (max-width: 900px) {
+  .play-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ep-side {
+    position: static;
+    max-height: 420px;
+  }
+}

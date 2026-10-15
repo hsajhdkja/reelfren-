@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Episode } from "@/data/dramas";
 
 // 从数据库来的集比旧类型多一个 id,扩展一下
@@ -31,14 +32,15 @@ export default function Player({
   total,
 }: PlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [autoNext, setAutoNext] = useState(true); // 自动连播,默认开
 
-  // ---- 断点续看:保存进度(静默失败,不打扰看剧) ----
+  // 断点续看:保存进度(静默失败,不打扰看剧)
   function saveProgress() {
     const video = videoRef.current;
-    // 开头 5 秒内不值得存;没拿到时长说明还没开始
     if (!video || !video.duration || video.currentTime < 5) return;
     fetch("/api/progress", {
       method: "PUT",
@@ -47,7 +49,7 @@ export default function Player({
         episodeId: episode.id,
         positionSec: video.currentTime,
       }),
-    }).catch(() => {}); // 失败就失败,看剧要紧
+    }).catch(() => {});
   }
 
   // 播放中:每 10 秒自动存一次
@@ -57,6 +59,14 @@ export default function Player({
     return () => clearInterval(timer);
   }, [isPlaying, episode.id]);
 
+  // 播完:开连播且有下一集 → 自动跳转
+  function handleEnded() {
+    saveProgress();
+    if (autoNext && nextNumber) {
+      router.push(`/dramas/${dramaId}/play/${nextNumber}`);
+    }
+  }
+
   function togglePlay() {
     const video = videoRef.current;
     if (!video) return;
@@ -65,7 +75,6 @@ export default function Player({
     } else {
       video.pause();
     }
-    // isPlaying 由下面的 onPlay/onPause 事件自动同步
   }
 
   function handleSeek(time: number) {
@@ -81,9 +90,8 @@ export default function Player({
     setDuration(video.duration);
     try {
       const response = await fetch(`/api/progress?episodeId=${episode.id}`);
-      if (!response.ok) return; // 未登录/未网,直接从零开始
+      if (!response.ok) return;
       const data = await response.json();
-      // 超过 5 秒、且离结尾还有 10 秒以上,才值得"续"
       if (data.positionSec > 5 && data.positionSec < video.duration - 10) {
         video.currentTime = data.positionSec;
       }
@@ -102,9 +110,12 @@ export default function Player({
         onPlay={() => setIsPlaying(true)}
         onPause={() => {
           setIsPlaying(false);
-          saveProgress(); // 暂停那一刻也存一次
+          saveProgress();
         }}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+        onEnded={handleEnded}
+        onTimeUpdate={(event) =>
+          setCurrentTime(event.currentTarget.currentTime)
+        }
         onLoadedMetadata={handleLoadedMetadata}
       />
 
@@ -135,6 +146,15 @@ export default function Player({
         </span>
 
         <div className="player-nav">
+          <label className="player-auto">
+            <input
+              type="checkbox"
+              checked={autoNext}
+              onChange={(e) => setAutoNext(e.target.checked)}
+            />
+            连播
+          </label>
+
           {prevNumber ? (
             <Link
               className="secondary-button player-nav-button"

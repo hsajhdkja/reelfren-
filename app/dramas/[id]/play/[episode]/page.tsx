@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Player from "./Player";
 
-// 关闭"瞬时流式渲染"= 允许整页阻塞式渲染:每次访问现查数据库,数据实时
+// 请求时渲染:每次访问现查数据库(数据实时)
 export const instant = false;
 
 export default async function PlayPage({
@@ -25,7 +25,6 @@ export default async function PlayPage({
   const episode = row.episodes.find((item) => item.number === episodeNumber);
   if (!episode) notFound();
 
-  // 上一集/下一集:在整条剧集列表里找邻居
   const index = row.episodes.findIndex(
     (item) => item.number === episodeNumber
   );
@@ -40,41 +39,49 @@ export default async function PlayPage({
   };
 
   return (
-    <main className="site-shell">
+    <main className="site-shell play-shell">
       <nav className="detail-topbar">
         <Link className="back-link" href={`/dramas/${drama.id}`}>
           ← 返回详情页
         </Link>
       </nav>
 
-      <section className="play-section">
-        <Player
-          dramaId={drama.id}
-          episode={episode}
-          prevNumber={prevNumber}
-          nextNumber={nextNumber}
-          total={drama.episodeList.length}
-        />
+      <div className="play-layout">
+        {/* 左:播放器 + 标题 */}
+        <section className="play-main">
+          <Player
+            dramaId={drama.id}
+            episode={episode}
+            prevNumber={prevNumber}
+            nextNumber={nextNumber}
+            total={drama.episodeList.length}
+          />
 
-        <div className="play-info">
-          <span className="section-kicker">{drama.title}</span>
-          <h1>{episode.title}</h1>
-        </div>
+          <div className="play-info">
+            <span className="section-kicker">{drama.title}</span>
+            <h1>{episode.title}</h1>
+          </div>
+        </section>
 
-        <div className="episode-grid play-episode-grid">
-          {drama.episodeList.map((item) => (
-            <Link
-              key={item.number}
-              href={`/dramas/${drama.id}/play/${item.number}`}
-              className={`episode-item ${
-                item.number === episodeNumber ? "episode-active" : ""
-              }`}
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-      </section>
+        {/* 右:选集侧边栏(吸顶、独立滚动) */}
+        <aside className="ep-side">
+          <h2>选集(共 {drama.episodeList.length} 集)</h2>
+          <div className="ep-side-list">
+            {drama.episodeList.map((item) => (
+              <Link
+                key={item.number}
+                href={`/dramas/${drama.id}/play/${item.number}`}
+                className={`ep-side-item ${
+                  item.number === episodeNumber ? "episode-active" : ""
+                }`}
+              >
+                <span>第 {item.number} 集</span>
+                <span className="ep-side-name">{item.title}</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }
