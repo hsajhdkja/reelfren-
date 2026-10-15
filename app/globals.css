@@ -23,7 +23,33 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 10px;
+
+  /* ---- 精装修设计规范(阶段 9 第 1 课) ---- */
+  /* 间距系统:一切 gap/padding/margin 从这里取 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  /* 字号系统:全站只用这 6 档 */
+  --font-xs: 12px;
+  --font-sm: 13px;
+  --font-base: 14px;
+  --font-lg: 16px;
+  --font-xl: 20px;
+  --font-2xl: 26px;
+  /* 组件规格 */
+  --nav-h: 56px; /* 底部导航栏高度(第 2 课启用) */
+  --page-w: 1200px; /* 内容页最大宽度 */
+  /* 语义色:成功/危险(收藏红心、错误提示统一用) */
+  --success: #4ade80;
+  --danger: #f87171;
+
 }
+  
+
+  
 
 @theme inline {
   --color-background: var(--bg);
