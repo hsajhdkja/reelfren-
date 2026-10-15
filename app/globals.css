@@ -1542,3 +1542,134 @@ img {
   font-size: 0.75rem;
   line-height: 1.55;
 }
+/* ============ 精装修第 2 课:底部导航栏 ============ */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  height: var(--nav-h);
+  padding-bottom: env(safe-area-inset-bottom); /* 适配全面屏手势条 */
+  background: rgba(12, 12, 24, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-faint);
+  font-size: var(--font-xs);
+  transition: color 0.18s ease;
+}
+
+.bottom-nav-item:hover {
+  color: var(--text-muted);
+}
+
+.bottom-nav-active,
+.bottom-nav-active:hover {
+  color: var(--accent-soft);
+  font-weight: 600;
+}
+
+.bottom-nav-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* 页面内容自动让出导航栏的高度 */
+body {
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+}
+
+/* 电脑屏幕:变成居中悬浮胶囊,更有质感 */
+@media (min-width: 768px) {
+  .bottom-nav {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(480px, 90%);
+    bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+
+  body {
+    padding-bottom: calc(var(--nav-h) + 24px);
+  }
+}
+
+/* ============ 精装修第 2 课:底部导航栏 ============ */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  height: var(--nav-h);
+  padding-bottom: env(safe-area-inset-bottom); /* 适配全面屏手势条 */
+  background: rgba(12, 12, 24, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-faint);
+  font-size: var(--font-xs);
+  transition: color 0.18s ease;
+}
+
+.bottom-nav-item:hover {
+  color: var(--text-muted);
+}
+
+.bottom-nav-active,
+.bottom-nav-active:hover {
+  color: var(--accent-soft);
+  font-weight: 600;
+}
+
+.bottom-nav-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* 页面内容自动让出导航栏的高度 */
+body {
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+}
+
+/* 电脑屏幕:变成居中悬浮胶囊,更有质感 */
+@media (min-width: 768px) {
+  .bottom-nav {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(480px, 90%);
+    bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+
+  body {
+    padding-bottom: calc(var(--nav-h) + 24px);
+  }
+}
