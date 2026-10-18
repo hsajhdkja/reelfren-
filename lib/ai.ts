@@ -97,3 +97,49 @@ export async function chatStream(
   }
   return full;
 }
+// ---- Agent 支持:带工具调用的对话(阶段 10 第 2 课) ----
+
+export type ChatMessage = {
+  role: "system" | "user" | "assistant" | "tool";
+  content: string | null;
+  tool_calls?: {
+    id: string;
+    type: "function";
+    function: { name: string; arguments: string };
+  }[];
+  tool_call_id?: string;
+};
+
+export type ToolDefinition = {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>; // JSON Schema 格式的参数说明书
+  };
+};
+
+// 单轮对话(非流式):支持传工具说明书;返回模型的完整回复消息
+// (回复里可能是纯文字,也可能是一张"调用工具的工单")
+export async function chatOnce(
+  messages: ChatMessage[],
+  tools?: ToolDefinition[]
+): Promise<ChatMessage> {
+  const res = await fetch(`${BASE}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${KEY}`,
+    },
+    body: JSON.stringify({
+      model: process.env.LLM_MODEL,
+      messages,
+      ...(tools && tools.length > 0 ? { tools } : {}),
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`对话接口失败 ${res.status}: ${await res.text()}`);
+  }
+  const data = await res.json();
+  return data.choices[0].message as ChatMessage;
+}
