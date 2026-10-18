@@ -35,29 +35,61 @@ export default function Home() {
       setError(null);
       try {
         if (aiMode && keyword.trim()) {
-          // AI 语义搜索:一句话描述 → top3 + 推荐理由
+          // AI 语义搜索(流式):先收到剧目,再逐字收到推荐理由
           const response = await fetch(
-            `/api/search/ai?q=${encodeURIComponent(keyword.trim())}`
+            `/api/search/ai/stream?q=${encodeURIComponent(keyword.trim())}`
           );
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.message ?? "AI 搜索失败");
+          if (!response.ok || !response.body) {
+            throw new Error("AI 搜索失败");
           }
-          setAiReasons(
-            Object.fromEntries(
-              data.items.map((d: { id: number; reason: string }) => [
-                d.id,
-                d.reason,
-              ])
-            )
-          );
-          setResult({
-            total: data.items.length,
-            page: 1,
-            pageSize: data.items.length || 1,
-            totalPages: 1,
-            items: data.items,
-          });
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            // SSE 一条事件 = 一个空行分隔的块
+            const blocks = buffer.split("\n\n");
+            buffer = blocks.pop() ?? ""; // 最后一块可能不完整,留下次拼
+
+            for (const block of blocks) {
+              let event = "message";
+              const dataLines: string[] = [];
+              for (const line of block.split("\n")) {
+                if (line.startsWith("event:")) event = line.slice(6).trim();
+                if (line.startsWith("data:"))
+                  dataLines.push(line.slice(5).trim());
+              }
+              if (dataLines.length === 0) continue;
+              const payload = JSON.parse(dataLines.join("\n"));
+
+              if (event === "items") {
+                // 剧目先到:卡片立刻出现(理由区暂空)
+                setAiReasons({});
+                setResult({
+                  total: payload.items.length,
+                  page: 1,
+                  pageSize: payload.items.length || 1,
+                  totalPages: 1,
+                  items: payload.items,
+                });
+              }
+              if (event === "reason-delta") {
+                // 理由逐字到达:往对应卡片上"打字"
+                setAiReasons((prev) => ({
+                  ...prev,
+                  [payload.id]: (prev[payload.id] ?? "") + payload.text,
+                }));
+              }
+              if (event === "error") {
+                throw new Error(payload.message ?? "AI 搜索失败");
+              }
+            }
+          }
         } else {
           // 原有关键词/分类搜索
           const params = new URLSearchParams({
