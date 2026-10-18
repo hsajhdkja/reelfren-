@@ -10,6 +10,7 @@ const ITEMS = [
   { href: "/#discover", match: null, label: "分类", icon: "🔍" },
   { href: "/favorites", match: "/favorites", label: "收藏", icon: "❤️" },
   { href: "/me", match: "/me", label: "我的", icon: "👤" },
+  { href: "/assistant", match: "/assistant", label: "AI 助手", icon: "🤖" },
 ];
 
 // 这些页面不显示底部导航
