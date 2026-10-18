@@ -48,10 +48,24 @@ model User {
   id           Int             @id @default(autoincrement())
   email        String          @unique @db.VarChar(200)
   passwordHash String          @db.VarChar(200)
-  role         Role            @default(USER) // 新增:角色,默认普通人
+  role         Role            @default(USER)
   createdAt    DateTime        @default(now())
   favorites    Favorite[]
   progresses   WatchProgress[]
+  chats        ChatMessage[]
+}
+
+// AI 对话历史:持久化的会话记忆
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  role      String   @db.VarChar(20) // "user" 或 "assistant"
+  content   String   @db.Text
+  tools     String?  @db.VarChar(500) // 该回复用过的工具(JSON 数组文字)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model Favorite {

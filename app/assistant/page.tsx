@@ -1,21 +1,39 @@
 "use client";
 
-// AI 推荐助手:多轮对话,显示工具调用过程
+// AI 推荐助手:历史存服务端,刷新不丢
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 type Msg = {
   role: "user" | "assistant";
   content: string;
-  tools?: string[]; // 这条回复用了哪些工具(显示"已搜索"用)
+  tools?: string[];
 };
 
 export default function AssistantPage() {
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [checked, setChecked] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // 新消息到达时自动滚到底部
+  // 进页面:检查登录 + 从云端拉取历史对话
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => setLoggedIn(r.ok))
+      .finally(() => setChecked(true));
+    fetch("/api/assistant")
+      .then((r) => (r.ok ? r.json() : { items: [] }))
+      .then((d) =>
+        setMessages(
+          (d.items ?? []).filter(
+            (m: Msg) => m.role === "user" || m.role === "assistant"
+          )
+        )
+      );
+  }, []);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -25,9 +43,7 @@ export default function AssistantPage() {
     const content = input.trim();
     if (!content || loading) return;
 
-    // 带上全部历史 = 多轮会话记忆(AI 记得之前聊过什么)
-    const history: Msg[] = [...messages, { role: "user", content }];
-    setMessages(history); // 立刻显示用户的话
+    setMessages((prev) => [...prev, { role: "user", content }]);
     setInput("");
     setLoading(true);
 
@@ -35,14 +51,14 @@ export default function AssistantPage() {
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ content }),
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message ?? "请求失败");
       }
-      setMessages([
-        ...history,
+      setMessages((prev) => [
+        ...prev,
         {
           role: "assistant",
           content: data.reply,
@@ -50,8 +66,8 @@ export default function AssistantPage() {
         },
       ]);
     } catch (err) {
-      setMessages([
-        ...history,
+      setMessages((prev) => [
+        ...prev,
         {
           role: "assistant",
           content:
@@ -63,21 +79,28 @@ export default function AssistantPage() {
     }
   }
 
+  // 门禁:未登录 → 引导登录
+  if (checked && !loggedIn) {
+    return (
+      <main className="site-shell me-page">
+        <div className="auth-card">
+          <h1>请先登录</h1>
+          <p className="auth-switch">
+            <Link href="/login">去登录</Link> · <Link href="/">回首页</Link>
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="site-shell chat-page">
       <header className="chat-header">
         <h1>🤖 AI 推荐助手</h1>
-        <p>描述你想看的，我来帮你找（支持多轮对话）</p>
+        <p>对话历史已云端保存，换个设备也记得你</p>
       </header>
 
       <div className="chat-window">
-        {messages.length === 0 && (
-          <div className="chat-empty">
-            <p>👋 试试这样问我：</p>
-            <p>"想看女主复仇的剧" / "有什么评分高的豪门剧"</p>
-          </div>
-        )}
-
         {messages.map((msg, index) => (
           <div key={index} className={`bubble bubble-${msg.role}`}>
             <div className="bubble-text">{msg.content}</div>

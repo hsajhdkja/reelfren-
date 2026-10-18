@@ -57,6 +57,11 @@ export type Episode = Prisma.EpisodeModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel
+/**
  * Model Favorite
  * 
  */
