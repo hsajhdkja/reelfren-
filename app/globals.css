@@ -2175,3 +2175,110 @@ body {
 .chat-inputbar .primary-button {
   padding: 0.8rem 1.4rem;
 }
+/* ============ 精装修收尾:缺失基础规则补丁 ============ */
+
+.detail-topbar {
+  padding: 20px 0;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.player-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.player-progress {
+  display: block;
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.player-play {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-strong));
+  color: #fff;
+  font-size: 15px;
+  box-shadow: 0 8px 22px -8px var(--accent-glow);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease;
+}
+
+.player-play:hover {
+  transform: scale(1.06);
+  filter: brightness(1.05);
+}
+
+.player-time {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-nav-button {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.player-nav-disabled {
+  padding: 8px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.episode-active,
+.episode-active:hover {
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent-strong));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ============ 精装修:首页网格 4 列 × 2 行 ============ */
+
+.drama-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .drama-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

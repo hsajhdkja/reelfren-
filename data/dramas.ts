@@ -144,11 +144,12 @@ export const categories = [
 ];
 
 // 根据图片文件名拼出 Unsplash 的海报图地址
-export function posterUrl(image: string) {
-  return `https://images.unsplash.com/${image}?auto=format&fit=crop&w=700&h=1000&q=85`;
-}
+export function posterUrl(image: string): string {
+  // 如果数据库里已经是完整网址，直接使用
+  if (image.startsWith("https://") || image.startsWith("http://")) {
+    return image;
+  }
 
-// 按 id 查找一部短剧;找不到就返回 null(第 2 课的详情页会用它处理不存在的编号)
-export function getDramaById(id: number): Drama | null {
-  return dramas.find((drama) => drama.id === id) ?? null;
+  // 如果是原来使用的 Unsplash 图片标识，继续按原方式处理
+  return `https://images.unsplash.com/${image}?auto=format&fit=crop&w=600&q=80`;
 }
