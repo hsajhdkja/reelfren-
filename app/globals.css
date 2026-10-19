@@ -2282,3 +2282,20 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ============ 精装修收尾:加载占位与手机选集 ============ */
+
+.detail-loading,
+.play-loading {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 4rem 0;
+}
+
+/* 手机:选集列表也出现在播放器下方(宽屏时右侧栏已有) */
+@media (max-width: 900px) {
+  .ep-side-list-mobile {
+    display: block;
+    margin-top: var(--space-4);
+  }
+}

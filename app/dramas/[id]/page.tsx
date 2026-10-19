@@ -4,8 +4,14 @@ import { posterUrl } from "@/data/dramas";
 import { prisma } from "@/lib/prisma";
 import FavoriteButton from "@/components/FavoriteButton";
 
-// 关闭"瞬时流式渲染"= 允许整页阻塞式渲染:每次访问现查数据库,数据实时
-export const instant = false;
+// 构建期预渲染所有已上架的剧;之后导入的新剧走按需动态渲染
+export async function generateStaticParams() {
+  const rows = await prisma.drama.findMany({
+    where: { published: true },
+    select: { id: true },
+  });
+  return rows.map((row) => ({ id: String(row.id) }));
+}
 
 export default async function DramaDetailPage({
   params,
@@ -41,12 +47,6 @@ export default async function DramaDetailPage({
       </div>
 
       <div className="detail-body">
-        <nav className="detail-topbar">
-          <Link className="back-link" href="/">
-            ← 返回首页
-          </Link>
-        </nav>
-
         <section className="detail-hero">
           <img
             className="detail-poster"

@@ -3,9 +3,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Player from "./Player";
 
-// 请求时渲染:每次访问现查数据库(数据实时)
-export const instant = false;
-
 export default async function PlayPage({
   params,
 }: PageProps<"/dramas/[id]/play/[episode]">) {
@@ -22,7 +19,8 @@ export default async function PlayPage({
   });
   if (!row) notFound();
 
-  const episode = row.episodes.find((item) => item.number === episodeNumber);
+  const episode =
+    row.episodes.find((item) => item.number === episodeNumber) ?? null;
   if (!episode) notFound();
 
   const index = row.episodes.findIndex(
@@ -60,6 +58,22 @@ export default async function PlayPage({
           <div className="play-info">
             <span className="section-kicker">{drama.title}</span>
             <h1>{episode.title}</h1>
+          </div>
+
+          {/* 手机:选集列表也出现在播放器下方 */}
+          <div className="ep-side-list ep-side-list-mobile">
+            {drama.episodeList.map((item) => (
+              <Link
+                key={item.number}
+                href={`/dramas/${drama.id}/play/${item.number}`}
+                className={`ep-side-item ${
+                  item.number === episodeNumber ? "episode-active" : ""
+                }`}
+              >
+                <span>第 {item.number} 集</span>
+                <span className="ep-side-name">{item.title}</span>
+              </Link>
+            ))}
           </div>
         </section>
 
